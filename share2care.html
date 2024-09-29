@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Donation App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .form-field {
+            margin-bottom: 10px;
+        }
+
+        .floating-gifts {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="showDonationForm()">Login</button>
+        <button onclick="showSignUp()">Sign Up</button>
+        <button onclick="exitApp()">Exit</button>
+    </div>
+
+    <!-- Sign Up Page -->
+    <div id="signUpPage" class="hidden">
+        <h2>Sign Up</h2>
+        <input type="email" id="signUpEmail" placeholder="Email" required>
+        <input type="password" id="signUpPassword" placeholder="Password" required>
+        <button onclick="showDonationForm()">Sign Up</button>
+        <button onclick="goBackToLogin()">Back</button>
+    </div>
+
+    <!-- Donation Form -->
+    <div id="donationForm" class="hidden">
+        <h2>Food Donation Form</h2>
+        <div class="form-field">
+            <label for="donorName">Name:</label>
+            <input type="text" id="donorName" required>
+        </div>
+        <div class="form-field">
+            <label for="donorEmail">Email:</label>
+            <input type="email" id="donorEmail" required>
+        </div>
+        <div class="form-field">
+            <label for="donorPhone">Phone Number:</label>
+            <input type="tel" id="donorPhone" required>
+        </div>
+        <div class="form-field">
+            <label for="foodQuantity">Quantity:</label>
+            <input type="number" id="foodQuantity" required>
+        </div>
+        <div class="form-field">
+            <label for="foodType">Food Type:</label>
+            <input type="radio" name="foodType" value="Veg" required> Veg
+            <input type="radio" name="foodType" value="Non-Veg" required> Non-Veg
+        </div>
+        <div class="form-field">
+            <label for="donorLocation">Location:</label>
+            <input type="text" id="donorLocation" required>
+        </div>
+        <button onclick="showDropOffOptions()">Drop Off</button>
+        <button onclick="showNotADonor()">Not a Donor</button>
+        <button onclick="showRewards()">Rewards</button>
+        <button onclick="goBackToLogin()">Back</button>
+    </div>
+
+    <!-- Drop Off Options -->
+    <div id="dropOffOptions" class="hidden">
+        <h2>Where do you want to donate?</h2>
+        <button onclick="showOrphanagePage()">Orphanage</button>
+        <button onclick="showOldAgeHomePage()">Old Age Home</button>
+        <button onclick="goBackToDonationForm()">Back</button>
+    </div>
+
+    <!-- Orphanage Page -->
+    <div id="orphanagePage" class="hidden">
+        <h2>Orphanages Near You</h2>
+        <p>List of nearest orphanages based on your location:</p>
+        <!-- Nearest orphanages listed based on donorLocation -->
+        <button onclick="showOrphanageFeedback()">Submit Feedback/Request</button>
+        <textarea id="orphanageFeedback" rows="4" placeholder="Enter feedback/request here..."></textarea>
+        <button onclick="submitOrphanageFeedback()">Submit</button>
+        <h3>Track Donation</h3>
+        <input type="email" id="orphanageUserEmail" placeholder="User Email" required>
+        <button onclick="trackOrphanageUser()">Track</button>
+        <p id="orphanageTrackingResult"></p>
+        <button onclick="goBackToDropOffOptions()">Back</button>
+    </div>
+
+    <!-- Old Age Home Page -->
+    <div id="oldAgeHomePage" class="hidden">
+        <h2>Old Age Homes Near You</h2>
+        <p>List of nearest old age homes based on your location:</p>
+        <!-- Nearest old age homes listed based on donorLocation -->
+        <button onclick="showOldAgeHomeFeedback()">Submit Feedback/Request</button>
+        <textarea id="oldAgeHomeFeedback" rows="4" placeholder="Enter feedback/request here..."></textarea>
+        <button onclick="submitOldAgeHomeFeedback()">Submit</button>
+        <h3>Track Donation</h3>
+        <input type="email" id="oldAgeHomeUserEmail" placeholder="User Email" required>
+        <button onclick="trackOldAgeHomeUser()">Track</button>
+        <p id="oldAgeHomeTrackingResult"></p>
+        <button onclick="goBackToDropOffOptions()">Back</button>
+    </div>
+
+    <!-- Not a Donor (Admin Tracking) Page -->
+    <div id="adminTracking" class="hidden">
+        <h2>Admin Tracking</h2>
+        <p>Track where the donor is currently:</p>
+        <input type="email" id="adminEmail" placeholder="User Email" required>
+        <button onclick="trackUser()">Track</button>
+        <p id="trackingResult"></p>
+        <button onclick="goBackToDropOffOptions()">Back</button>
+    </div>
+
+    <!-- Rewards Page -->
+    <div id="rewardsPage" class="hidden">
+        <h2>Rewards</h2>
+        <div class="floating-gifts">
+            🎁 🎉 🎁 🎉 🎁 🎉
+        </div>
+        <p>You have earned <strong>10 reward points</strong> for your donations!</p>
+        <button onclick="goBackToDonationForm()">Back</button>
+    </div>
+
+    <script>
+        function showDonationForm() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('signUpPage').classList.add('hidden');
+            document.getElementById('donationForm').classList.remove('hidden');
+        }
+
+        function showSignUp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('signUpPage').classList.remove('hidden');
+        }
+
+        function showDropOffOptions() {
+            document.getElementById('donationForm').classList.add('hidden');
+            document.getElementById('dropOffOptions').classList.remove('hidden');
+        }
+
+        function showNotADonor() {
+            document.getElementById('dropOffOptions').classList.add('hidden');
+            document.getElementById('adminTracking').classList.remove('hidden');
+        }
+
+        function showOrphanagePage() {
+            document.getElementById('dropOffOptions').classList.add('hidden');
+            document.getElementById('orphanagePage').classList.remove('hidden');
+        }
+
+        function showOldAgeHomePage() {
+            document.getElementById('dropOffOptions').classList.add('hidden');
+            document.getElementById('oldAgeHomePage').classList.remove('hidden');
+        }
+
+        function showRewards() {
+            document.getElementById('donationForm').classList.add('hidden');
+            document.getElementById('rewardsPage').classList.remove('hidden');
+        }
+
+        function submitOrphanageFeedback() {
+            const feedback = document.getElementById('orphanageFeedback').value;
+            alert(`Feedback submitted to Orphanage: ${feedback}`);
+            document.getElementById('orphanageFeedback').value = ''; // Clear textarea
+        }
+
+        function submitOldAgeHomeFeedback() {
+            const feedback = document.getElementById('oldAgeHomeFeedback').value;
+            alert(`Feedback submitted to Old Age Home: ${feedback}`);
+            document.getElementById('oldAgeHomeFeedback').value = ''; // Clear textarea
+        }
+
+        function trackOrphanageUser() {
+            const userEmail = document.getElementById('orphanageUserEmail').value;
+            document.getElementById('orphanageTrackingResult').innerText = `Tracking donor with email: ${userEmail}`;
+        }
+
+        function trackOldAgeHomeUser() {
+            const userEmail = document.getElementById('oldAgeHomeUserEmail').value;
+            document.getElementById('oldAgeHomeTrackingResult').innerText = `Tracking donor with email: ${userEmail}`;
+        }
+
+        function trackUser() {
+            const userEmail = document.getElementById('adminEmail').value;
+            document.getElementById('trackingResult').innerText = `Tracking user: ${userEmail}`;
+        }
+
+        function exitApp() {
+            alert('Exiting the app.');
+            window.close();
+        }
+
+        function goBackToLogin() {
+            document.getElementById('signUpPage').classList.add('hidden');
+            document.getElementById('donationForm').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+
+        function goBackToDonationForm() {
+            document.getElementById('dropOffOptions').classList.add('hidden');
+            document.getElementById('rewardsPage').classList.add('hidden');
+            document.getElementById('donationForm').classList.remove('hidden');
+        }
+
+        function goBackToDropOffOptions() {
+            document.getElementById('orphanagePage').classList.add('hidden');
+            document.getElementById('oldAgeHomePage').classList.add('hidden');
+            document.getElementById('adminTracking').classList.add('hidden');
+            document.getElementById('dropOffOptions').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
